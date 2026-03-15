@@ -1,0 +1,4 @@
+model_name: mistral-embed
+api_key: MISTRAL_API_KEY
+timeout: 120
+max_retries: 5
