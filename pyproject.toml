@@ -12,5 +12,6 @@ dependencies = [
     "langchain-huggingface>=1.2.1",
     "langchain-mistralai>=1.1.2",
     "langchain-postgres>=0.0.17",
+    "uvicorn>=0.41.0",
 ]
 
