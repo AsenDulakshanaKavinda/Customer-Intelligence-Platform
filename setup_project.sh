@@ -11,7 +11,7 @@ mkdir -p tests
 mkdir -p docker
 
 # Main app file
-touch app/main.py
+# touch app/main.py
 
 # API
 touch app/api/routes_chat.py
