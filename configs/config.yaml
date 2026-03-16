@@ -2,3 +2,6 @@ defaults:
   - _self_
   - environments: dev
   - models: model
+  - embeddings: mistral
+  - db: postgres
+  - logging: app
