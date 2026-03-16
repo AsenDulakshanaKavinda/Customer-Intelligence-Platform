@@ -13,8 +13,15 @@ from langchain_postgres import PGVector
 log = get_logger(__file__)
 
 def init_db():
+    """
+    Bootstraps the database by enabling pgvector and creating tables.
+    
+    Warning:
+        This requires the DB user to have permission to install extensions.
+    """
     try:
         with engine.connect() as conn:
+            # pgvector MUST be enabled before the Document table is created.
             conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
             conn.commit()
         Base.metadata.create_all(engine)  
@@ -25,6 +32,11 @@ def init_db():
 
 
 def init_vector_store() -> PGVector:
+    """
+    Initializes a LangChain-compatible vector store instance.
+    
+    This is used when you need to integrate with LangChain chains or agents.
+    """
     try:
         vector_store = PGVector(
             embeddings=load_embedding('mistral'),

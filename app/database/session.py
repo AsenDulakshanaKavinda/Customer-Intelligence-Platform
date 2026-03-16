@@ -19,6 +19,15 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 def get_session():
+    """
+    Dependency generator for database sessions.
+    
+    Yields:
+        SessionLocal: A transactional database session.
+    
+    Note:
+        Ensures the session is closed even if an error occurs during the request.
+    """
     db = SessionLocal()
     try:
         yield db
