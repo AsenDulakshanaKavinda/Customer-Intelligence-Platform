@@ -1,5 +1,5 @@
 
-from app.database import init_vector_store
+from scripts.initialize_db import init_vector_store, init_db
 from langchain_core.documents import Document
 from app.utils import get_logger
 
@@ -49,6 +49,7 @@ docs = [
 ]
 
 try:
+    db = init_db()
     vs = init_vector_store()
     vs.add_documents(docs, ids=[doc.metadata["id"] for doc in docs])
     log.info("done")

@@ -1,5 +1,5 @@
 from app.utils import get_logger, cfg
-from .constants import *
+from .constants import DATABASE_URL
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base

@@ -1,12 +1,16 @@
 from pathlib import Path
 from hydra import initialize_config_dir, compose
+from omegaconf import DictConfig
 
+# Resolve the absolute path to the 'configs' directory relative to this file.
 CONFIG_PATH = Path(__file__).resolve().parents[2] / "configs"
 
 if not CONFIG_PATH.exists():
     raise FileNotFoundError(f"Config directory not found at {CONFIG_PATH}")
 
-def load_config():
+def load_config() -> DictConfig:
+
+
     config_path = str(CONFIG_PATH)
     try:
         with initialize_config_dir(version_base=None, config_dir=config_path):
