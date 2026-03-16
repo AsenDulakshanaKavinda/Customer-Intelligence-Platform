@@ -4,3 +4,4 @@ defaults:
   - models: model
   - embeddings: mistral
   - db: postgres
+  - logging: app

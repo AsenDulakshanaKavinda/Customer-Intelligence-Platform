@@ -9,7 +9,19 @@ if not CONFIG_PATH.exists():
     raise FileNotFoundError(f"Config directory not found at {CONFIG_PATH}")
 
 def load_config() -> DictConfig:
+    """
+    Initializes Hydra and composes the project configuration.
 
+    This function locates the configuration directory, initializes the 
+    Hydra context, and merges the default 'config.yaml' into a single 
+    DictConfig object.
+
+    Returns:
+        DictConfig: A dictionary-like object containing the merged configurations.
+
+    Raises:
+        RuntimeError: If Hydra fails to initialize or the config file is missing/invalid.
+    """
 
     config_path = str(CONFIG_PATH)
     try:
