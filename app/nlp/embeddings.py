@@ -8,6 +8,27 @@ log = get_logger(__file__)
 
 
 def load_embedding(provider: str):
+    """
+    Factory function to load an embedding model based on the specified provider.
+
+    This function reads configuration from the Hydra 'cfg' object and 
+    retrieves API keys from environment variables.
+
+    Args:
+        provider (str): The name of the embedding provider. 
+            Supported: 'mistral', 'sentence-transformers'.
+
+    Returns:
+        MistralAIEmbeddings: An initialized LangChain embedding object.
+
+    Raises:
+        ValueError: If the provider is empty or not in the allowed list.
+        RuntimeError: If there is an issue during model initialization (e.g: missing API key).
+    
+    Example:
+        >>> model = load_embedding('mistral')
+        >>> vector = model.embed_query("Hello world")
+    """
     allowed_models = ['mistral', 'sentence-transformers']
     
     if not provider:
