@@ -3,3 +3,4 @@ defaults:
   - environments: dev
   - models: model
   - embeddings: mistral
+  - db: postgres
