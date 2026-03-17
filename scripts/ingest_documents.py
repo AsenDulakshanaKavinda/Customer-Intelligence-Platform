@@ -110,3 +110,5 @@ class DocumentIngest:
         except Exception as e:
             log.error(f"Error while ingesting documents: {str(e)}")
             raise RuntimeError("Error while ingesting documents")
+        
+    
