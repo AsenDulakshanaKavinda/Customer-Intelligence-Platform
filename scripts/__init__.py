@@ -1,8 +1,8 @@
 from .initialize_db import init_vector_store, init_db
-from .ingest_documents import DocumentIngest
+from .constants import DATABASE_URL
 
 __all__ = [
     "init_vector_store",
     "init_db",
-    "DocumentIngest"
+    "DATABASE_URL"
 ]

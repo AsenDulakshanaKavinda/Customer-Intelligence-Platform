@@ -11,8 +11,6 @@ def retriever_tool(query: str):
     """
     Retrieve relevant information from the database or knowledge base
 
-
-
     """
     try:
         result = retrievers.search_as_retriever(query=query)

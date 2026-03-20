@@ -1,16 +1,21 @@
 from app.utils import get_logger, cfg
 
+from langchain.chat_models import init_chat_model
 from langchain.agents import create_agent
-
 
 log = get_logger(__file__)
 
+model = init_chat_model(cfg.model.escalation_agent_model)
+
+escalation_agent_system_prompt = """
+
+"""
 
 try:
     escalation_agent = create_agent(
-        model=cfg.model.escalation_agent_model,
-        system_prompt="system_prompt",
-        tools=[],
+        model = model,
+        system_prompt = escalation_agent_system_prompt,
+        tools = [],
     )
     log.info("Initializing escalation agent")
 except Exception as e:

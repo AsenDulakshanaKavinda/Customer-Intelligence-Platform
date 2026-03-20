@@ -1,4 +1,6 @@
 router_agent_model: mistral-large-latest
 retrieval_agent_model: mistral-large-latest
 escalation_agent_model: mistral-large-latest
-answer_agent_model: mistral-large-latest
+customer_service_agent_model: mistral-large-latest
+sql_agent_model: mistral-large-latest
+classification_agent_model: mistral-small-latest

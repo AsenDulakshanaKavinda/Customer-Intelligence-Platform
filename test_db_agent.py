@@ -1,26 +1,29 @@
-from app.utils import cfg, get_logger
-
 import os
-from pydantic import BaseModel, Field
 from langchain.chat_models import init_chat_model
-from langchain_community.agent_toolkits import SQLDatabaseToolkit
-from langchain_community.utilities import SQLDatabase
-from langchain.agents import create_agent
 
 from dotenv import load_dotenv; load_dotenv()
+
 os.environ["MISTRAL_API_KEY"] = os.getenv("MISTRAL_API_KEY")
 
-db_connection = os.getenv("DATABASE_CONNECTION")
+model = init_chat_model(
+    model='mistral-large-latest'
+)
 
-log = get_logger(__file__)
+from langchain_community.agent_toolkits import SQLDatabaseToolkit
+from langchain_community.utilities import SQLDatabase
+from scripts import DATABASE_URL
+db = SQLDatabase.from_uri(DATABASE_URL)
+toolkit = SQLDatabaseToolkit(
+    db = db,
+    llm = model
+)
 
-db = SQLDatabase.from_uri(database_uri = db_connection)
-model = init_chat_model(model = cfg.model.sql_agent_model)
-toolkit = SQLDatabaseToolkit(db = db, llm = model)
 tools = toolkit.get_tools()
 
+for tool in tools:
+    print(f"{tool.name}: {tool.description}\n")
 
-sql_agent_system_prompt = """
+system_prompt = """
 You are an agent designed to interact with a SQL database.
 Given an input question, create a syntactically correct {dialect} query to run,
 then look at the results of the query and return the answer. Unless the user
@@ -46,21 +49,18 @@ Then you should query the schema of the most relevant tables.
     top_k=5,
 )
 
-class OutputSchema(BaseModel):
-    answer: str = Field(..., description="answer for the question")
-    query: str = Field(..., description="")
-    confident: float = Field(..., description="from 0 to 1 how confident about the answer")
+from langchain.agents import create_agent
 
+agent = create_agent(
+    model=model,
+    tools=tools,
+    system_prompt=system_prompt
+)
 
-try:
-    sql_agent = create_agent(
-        model = model,
-        tools = tools,
-        system_prompt = sql_agent_system_prompt,
-        response_format = OutputSchema
-    )
-    log.info("Initializing SQL agent")
+question = "what are the last name of the teacher name John? change it to 'Perera' "
 
-except Exception as e:
-    log.error(f"Error while initializing the SQL agent: {str(e)}")  
-    raise RuntimeError("Error while initializing the SQL agent")  
+for step in agent.stream(
+    {"messages": [{"role": "user", "content": question}]},
+    stream_mode="values",
+):
+    step["messages"][-1].pretty_print()
