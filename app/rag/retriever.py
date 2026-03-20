@@ -47,3 +47,4 @@ class Retrievers:
             log.error(f"Error while search as retriever: {str(e)}")
             raise RuntimeError(f"Error while search as retriever")
 
+
