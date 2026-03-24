@@ -7,9 +7,9 @@ from app.agents.agent_class import AI_Agent
 log = get_logger(__file__)
 
 class ClassificationAgentOutput(BaseModel):
-    sentiment: str = Literal["positive", "negative", "natural"]
-    topic: str = Literal["shipping_and_delivery", "customer_service", "price_and_value", 
-                         "quality_and_performance", "use_and_design", "other"]
+    sentiment: Literal["positive", "negative", "neutral"] = "neutral"
+    topic: Literal["shipping_and_delivery", "customer_service", "price_and_value", 
+                   "quality_and_performance", "use_and_design", "other"] = "other"
 
 classification_agent_system_prompt = """
 Role
@@ -45,11 +45,11 @@ try:
     log.info("Initializing classification agent")
     classification_agent = AI_Agent(
         name = "classification_agent",
-        model_name = cfg.model.classification_agent_model,
+        model_name = cfg.models.classification_agent_model,
         system_prompt = classification_agent_system_prompt,
-        tools = [],
+        tools = None,
         output_schema = ClassificationAgentOutput
     )
 except Exception as e:
     log.error(f"Error in classification agent {str(e)}")
-    raise RuntimeError("Error in classification agent")
+    raise RuntimeError(f"Error in classification agent: {str(e)}")

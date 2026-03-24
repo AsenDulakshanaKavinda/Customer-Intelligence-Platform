@@ -41,7 +41,7 @@ class Feedback(Base):
     
     __tablename__ = "feedback"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Text, primary_key=True)
     user_id = Column(Text)
     sentiment = Column(Text)
     topic = Column(Text)

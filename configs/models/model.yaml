@@ -4,3 +4,4 @@ escalation_agent_model: mistral-large-latest
 customer_service_agent_model: mistral-large-latest
 sql_agent_model: mistral-large-latest
 classification_agent_model: mistral-small-latest
+api_key: MISTRAL_API_KEY

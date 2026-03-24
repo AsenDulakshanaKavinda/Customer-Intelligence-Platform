@@ -9,12 +9,12 @@ from app.utils import get_logger, cfg
 
 # - load env variables
 load_dotenv()
-os.environ["MISTRAL_API_KEY"] = os.getenv(cfg.models.api_key)
+os.environ["MISTRAL_API_KEY"] = os.getenv("MISTRAL_API_KEY")
 log = get_logger(__file__)
 
 
 class AI_Agent:
-    def __init__(self, name: str, model_name: str, system_prompt: str, tools: list, output_schema: BaseModel):
+    def __init__(self, name: str, model_name: str, system_prompt: str, tools: list = None, output_schema: BaseModel = None):
         """
         Initializes a unique agent instance with a specific model, system prompt, tools, and checkpointer.
 
@@ -41,11 +41,11 @@ class AI_Agent:
             log.info(f"[{self.name}] - Agent model loaded successfully.")
              
             self.agent_executor = create_agent(
-                model=self.model,
-                system_prompt=self.system_prompt,
-                tools=self.tools,
-                checkpointer=self.checkpointer,
-                response_format=self.output_schema
+                model = self.model,
+                system_prompt = self.system_prompt,
+                tools = self.tools,
+                checkpointer = self.checkpointer,
+                response_format = self.output_schema
             )
             log.info(f"[{self.name}] - Agent created successfully.")
         except Exception as e:
@@ -73,22 +73,11 @@ class AI_Agent:
             - This method can be called to interact with the agent, 
             allowing for concurrent interactions by using unique thread IDs.
         """
-        if thread_id:
-            # - with memory
-            config = {"configurable": {"thread_id": thread_id}}
-            log.info(f"[{self.name}] - Generating response for thread_id: {thread_id}")
-        else:
-            # - no memory
-            # Some providers allow empty config for stateless calls, 
-            # otherwise use a random UUID that won't be reused.
-            thread_id = str(uuid4())
-            config = {"configurable": {"thread_id": thread_id}}
-            log.info(f"[{self.name}] - No thread_id provided. Generated new thread_id: {thread_id} for the interaction.")
 
-        
-        config = {"configurable": {"thread_id": thread_id}}
-        log.info(f"[{self.name}] - Generating response for thread_id: {thread_id}")
-        
+        if not thread_id:
+            log.warning(f"[{self.name}] - No thread_id provided and generating new one.")
+            thread_id = str(uuid4())
+
         try:
             response = self.agent_executor.invoke(
                 {
@@ -96,8 +85,8 @@ class AI_Agent:
                         "role": "user",
                         "content": user_query
                     }],
-                    "config": config
-                }
+                },
+                {"configurable": {"thread_id": thread_id}},
             )
             log.info(f"[{self.name}] - Response generated successfully for thread_id: {thread_id}")
             return response
