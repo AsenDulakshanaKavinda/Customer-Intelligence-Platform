@@ -26,3 +26,23 @@ class Document(Base):
 
     # embedding vector
     embedding = Column(Vector(VECTOR_SIZE))
+
+class Feedback(Base):
+    """
+    SQLAlchemy model representing user feedback.
+    
+    Attributes:
+        id (int): Primary key.
+        user_id (str): Identifier for the user providing feedback.
+        sentiment (str): The sentiment classification of the feedback (e.g., "positive", "negative", "neutral").
+        topic (str): The topic classification of the feedback (e.g., "product", "service", "delivery").
+        content (str): The raw text of the feedback provided by the user.
+    """
+    
+    __tablename__ = "feedback"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Text)
+    sentiment = Column(Text)
+    topic = Column(Text)
+    content = Column(Text)
