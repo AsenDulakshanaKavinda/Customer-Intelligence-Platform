@@ -1,6 +1,7 @@
 defaults:
   - _self_
   - environments: dev
+  - authentication: auth
   - models: model
   - embeddings: mistral
   - db: postgres
