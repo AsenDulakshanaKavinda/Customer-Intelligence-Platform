@@ -53,7 +53,7 @@ class AI_Agent:
             raise RuntimeError(f"[{self.name}]- Error during agent initialization")
 
 
-    def invoke(self, user_query: str, thread_id: str = None):
+    def invoke(self, user_query: str, thread_id: str = None, prompt_variables: dict = None):
         """
         Invokes the agent with a user query and returns the response.
 
@@ -81,10 +81,10 @@ class AI_Agent:
         try:
             response = self.agent_executor.invoke(
                 {
-                    "messages": [{
-                        "role": "user",
-                        "content": user_query
-                    }],
+                    "messages": [
+                        {"system": self.system_prompt.format(**(prompt_variables or {}))},
+                        {"role": "user","content": user_query}
+                    ],
                 },
                 {"configurable": {"thread_id": thread_id}},
             )

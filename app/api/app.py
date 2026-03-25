@@ -6,11 +6,27 @@ from .routes_auth import auth_route
 
 
 app = FastAPI(
-    title="ex name",
-    description="ex desc",
+    title="Customer Intelligence Platform API",
+    description="API for managing customer interactions, feedback, and insights. " \
+    "This API provides endpoints for authentication, chat management, feedback collection, and administrative tasks.",
     docs_url="/docs",
     version="n"
 )
+
+@app.get("/")
+def home():
+    try:
+        return {
+            "title": "Customer Intelligence Platform API",
+            "description": "API for managing customer interactions, feedback, and insights. "\
+            "This API provides endpoints for authentication, chat management, feedback collection, and administrative tasks.",
+            "status_code": status.HTTP_200_OK
+        }
+    except Exception as e:
+        raise HTTPException(
+            detail=f"Error: {str(e)}",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 @app.get("/health")
 def check_health():
