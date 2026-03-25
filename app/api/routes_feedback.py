@@ -1,14 +1,20 @@
-from fastapi import APIRouter, status, HTTPException, Depends
+from uuid import uuid4
 from pydantic import BaseModel
+
+from fastapi import APIRouter, status, HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
+
 from app.agents import classification_agent
 from app.database import get_session, Feedback
 from sqlalchemy.orm import Session
-from uuid import uuid4
-from app.utils import cfg, get_logger
 
+from app.utils import cfg, get_logger
 log = get_logger(__file__)
 
-feedback_route = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+
+feedback_route = APIRouter(dependencies=[Depends(oauth2_scheme)])
+
 
 @feedback_route.get(path="/health", status_code=status.HTTP_200_OK)
 def check_feedback_router():

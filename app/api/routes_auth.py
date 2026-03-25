@@ -1,12 +1,20 @@
+
+import uuid
+from pydantic import BaseModel
+
 from fastapi import APIRouter, status, HTTPException, Depends
+from fastapi.security import  OAuth2PasswordRequestForm
+
 from sqlalchemy.orm import Session
 from app.database import get_session
 from app.database.models import User
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from app.authentication import get_current_user, create_access_token, verify_password, get_password_hash    
+from app.authentication import get_current_user, create_access_token, verify_password, get_password_hash  
+
+from .schemas import UserCreate
 
 auth_route = APIRouter()
+
 
 @auth_route.get("/health")
 def check_auth_router():
@@ -28,7 +36,7 @@ def check_auth_router():
 
 
 @auth_route.post("/register")
-def register(user: User, db: Session = Depends(get_session)):
+def register(user: UserCreate, db: Session = Depends(get_session)):
     """
     Register a new user. This endpoint checks if the username is already taken, hashes the provided password, and saves the new user to the database. 
     If registration is successful, it returns a success message along with the new user's ID. 
@@ -52,11 +60,19 @@ def register(user: User, db: Session = Depends(get_session)):
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Username already registered"
             )
-        user.hashed_password = get_password_hash(user.password)
-        db.add(user)
+        
+        new_user = User(
+            user_id=str(uuid.uuid4()),  
+            username=user.username.lower(),
+            password_hash=get_password_hash(user.password)
+        )
+
+        db.add(new_user)
         db.commit()
-        db.refresh(user)
-        return {"message": "User registered successfully", "user_id": user.id}
+        db.refresh(new_user)
+
+        return {"message": "User registered successfully", "user_id": new_user.user_id}
+        
     except Exception as e:
         raise HTTPException(
             detail=f"Error during registration: {str(e)}",
@@ -83,7 +99,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     """
     try:
         user = db.query(User).filter(User.username == form_data.username).first()
-        if not user or not verify_password(form_data.password, user.hashed_password):
+        if not user or not verify_password(form_data.password, user.password_hash):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",

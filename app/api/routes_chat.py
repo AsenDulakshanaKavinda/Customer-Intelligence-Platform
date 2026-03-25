@@ -1,7 +1,12 @@
-from fastapi import APIRouter, status, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, status, HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 
-chat_route = APIRouter()
+from .schemas import QuestionPayload
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+
+chat_route = APIRouter(dependencies=[Depends(oauth2_scheme)])
+
 
 @chat_route.get("/health")
 def check_chat_router():
@@ -16,9 +21,7 @@ def check_chat_router():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
-class QuestionPayload(BaseModel):
-    question: str
-    user_id: str
+
 
 @chat_route.post("/question")
 def user_question(question_payload: QuestionPayload):

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Depends
 from .routes_admin import admin_route
 from .routes_chat import chat_route
 from .routes_feedback import feedback_route
@@ -10,8 +10,9 @@ app = FastAPI(
     description="API for managing customer interactions, feedback, and insights. " \
     "This API provides endpoints for authentication, chat management, feedback collection, and administrative tasks.",
     docs_url="/docs",
-    version="n"
+    version="0.0.1",
 )
+
 
 @app.get("/")
 def home():

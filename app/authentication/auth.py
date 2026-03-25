@@ -18,7 +18,7 @@ log = get_logger(__file__)
 # configurations for JWT
 SECRET_KEY = os.getenv(cfg.authentication.SECRET_KEY)
 ALGORITHM = os.getenv(cfg.authentication.ALGORITHM)
-ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv(cfg.authentication.ACCESS_TOKEN_EXPIRE_MINUTES)
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv(cfg.authentication.ACCESS_TOKEN_EXPIRE_MINUTES))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

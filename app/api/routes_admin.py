@@ -1,6 +1,9 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 
-admin_route = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+
+admin_route = APIRouter(dependencies=[Depends(oauth2_scheme)])
 
 @admin_route.get("/health")
 def check_admin_router():
@@ -14,4 +17,3 @@ def check_admin_router():
             detail=f"Error in admin route: {str(e)}",
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
- 
